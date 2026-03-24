@@ -1,0 +1,52 @@
+{
+  "name": "goodeat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon",
+    "db:studio": "npx prisma studio",
+    "db:deploy": "npx prisma migrate deploy && npx prisma generate",
+    "db:migrate": "npx prisma migrate dev --name",
+    "migrate:reset": "npx prisma migrate reset",
+    "seed": "npx prisma db seed",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix",
+    "pretty": "npx prettier . --check",
+    "pretty:fix": "npx prettier . --write",
+    "format": "npm run pretty:fix && npm run lint:fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@prisma/adapter-mariadb": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "argon2": "^0.44.0",
+    "chalk": "^4.1.2",
+    "cors": "^2.8.6",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-fileupload": "^1.5.2",
+    "lodash": "^4.17.23",
+    "morgan": "^1.10.1",
+    "mysql2": "^3.18.2",
+    "ts-node": "^10.9.2",
+    "yup": "^1.7.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/express-fileupload": "^1.5.1",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^25.5.0",
+    "nodemon": "^3.1.14",
+    "prisma": "^7.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

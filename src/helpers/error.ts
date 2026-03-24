@@ -1,0 +1,59 @@
+import { boolean } from "yup";
+
+export class AppError extends Error {
+  private isOperational: boolean;
+  constructor(message: string, statusCode: number) {
+    super(message || "Erreur serveur");
+    this.name = this.constructor.name;
+    this.isOperational = true;
+  }
+}
+
+export class BadRequest extends AppError {
+  constructor(message: string) {
+    super(message || "Requête invalide", 400);
+  }
+}
+
+export class Unauthorized extends AppError {
+  constructor(message: string) {
+    super(message || "Non autorisé", 401);
+  }
+}
+
+export class Forbidden extends AppError {
+  constructor(message: string) {
+    super(message || "Accès refusé", 403);
+  }
+}
+
+export class NotFound extends AppError {
+  constructor(message: string) {
+    super(message || "Ressource introuvable", 404);
+  }
+}
+
+export class Conflict extends AppError {
+  constructor(message: string) {
+    super(message || "Conflit de ressource", 409);
+  }
+}
+
+export class InternalServerError extends AppError {
+  constructor(message: string) {
+    super(message || "Erreur interne du serveur", 500);
+  }
+}
+
+export class ValidationError extends AppError {
+  constructor(message: string) {
+    super(message || "Données invalides", 422);
+  }
+}
+
+export class DatabaseError extends AppError {
+  constructor(message: string) {
+    super(message || "Erreur de base de données", 500);
+  }
+}
+

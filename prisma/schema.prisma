@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id           String    @id @default(uuid())
+  firstName    String    @db.VarChar(100)
+  lastName     String    @db.VarChar(100)
+  email        String?   @db.VarChar(191)
+  profile      String?
+  phone        String?   @db.VarChar(191)
+  secretOpt    String?   @db.VarChar(191)
+  username     String?   @db.VarChar(191)
+  password     String
+  isVerified   Boolean   @default(false)
+  isUser       Boolean   @default(false)
+  positionId   String?   @db.VarChar(36)
+  lastLogoutAt DateTime?
+  isEmployee   Boolean   @default(false)
+  isActive     Boolean   @default(false)
+  date         DateTime  @default(now())
+
+  userHasRoles UserHasRoles[]
+}
+
+model Role {
+  id          String  @id @default(uuid())
+  name        String  @db.VarChar(191)
+  description String? @db.Text
+
+  isActive  Boolean  @default(true)
+  date      DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users       UserHasRoles[]
+  permissions RoleHasPermissions[]
+
+  @@unique([name])
+  @@map("roles")
+}
+
+model Permission {
+  id            String  @id @default(uuid())
+  permissionKey String  @db.VarChar(191)
+  title         String  @db.VarChar(191)
+  description   String? @db.Text
+  moduleId      String  @db.VarChar(36)
+
+  isActive  Boolean  @default(true)
+  date      DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  roles            RoleHasPermissions[]
+  permissionModule PermissionModule?    @relation(fields: [moduleId], references: [id])
+
+  @@unique([permissionKey])
+  @@map("permissions")
+}
+
+model PermissionModule {
+  id          String  @id @default(uuid())
+  title       String  @db.VarChar(191)
+  description String? @db.Text
+
+  isActive  Boolean  @default(true)
+  date      DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  permissions Permission[]
+
+  @@unique([title])
+  @@map("permission_modules")
+}
+
+model UserHasRoles {
+  userId     String   @db.VarChar(36)
+  roleId     String   @db.VarChar(36)
+  assignedBy String?  @db.VarChar(36)
+  assignedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  positionId String? @db.VarChar(36)
+
+  @@id([userId, roleId])
+  @@map("user_has_roles")
+}
+
+model RoleHasPermissions {
+  roleId       String   @db.VarChar(36)
+  permissionId String   @db.VarChar(36)
+  assignedBy   String?  @db.VarChar(36)
+  assignedAt   DateTime @default(now())
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_has_permissions")
+}
+
+model Category {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+
+  isActive Boolean  @default(false)
+  date     DateTime @default(now())
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  products  Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id               Int     @id @default(autoincrement())
+  name             String  @unique
+  shortDescription String  @map("short_description")
+  longDescription  String? @map("long_description")
+  images           Json
+  quantity         Int?    @default(0)
+  price            Float
+  categoryId       Int     @map("category_id")
+
+  isActive Boolean  @default(false)
+  date     DateTime @default(now())
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId])
+  @@map("produits")
+}
