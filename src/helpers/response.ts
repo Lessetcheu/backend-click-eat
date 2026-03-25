@@ -124,7 +124,7 @@ class ApiResponse {
       error: this.formatError(error),
     };
 
-    return res.status(status).json(error);
+    return res.status(status).json(response);
   }
 
 
